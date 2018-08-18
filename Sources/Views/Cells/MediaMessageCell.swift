@@ -39,6 +39,8 @@ open class MediaMessageCell: MessageContentCell {
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
+    
+    open var url : URL?
 
     // MARK: - Methods
 
@@ -69,6 +71,10 @@ open class MediaMessageCell: MessageContentCell {
             playButtonView.isHidden = true
         case .video(let mediaItem):
             imageView.image = mediaItem.image ?? mediaItem.placeholderImage
+            playButtonView.isHidden = false
+        case .audio(let mediaItem):
+            imageView.image = mediaItem.image ?? mediaItem.placeholderImage
+            self.url = mediaItem.url
             playButtonView.isHidden = false
         default:
             break

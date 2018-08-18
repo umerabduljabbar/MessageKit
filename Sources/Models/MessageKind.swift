@@ -50,6 +50,9 @@ public enum MessageKind {
 
     /// An emoji message.
     case emoji(String)
+    
+    /// An audio message
+    case audio(MediaItem)
 
     /// A custom message.
     /// - Note: Using this case requires that you override the following methods and handle this case:

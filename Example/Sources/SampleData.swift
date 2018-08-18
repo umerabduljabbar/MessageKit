@@ -67,10 +67,12 @@ final internal class SampleData {
     }
 
     let messageImages: [UIImage] = [#imageLiteral(resourceName: "Dan-Leonard"), #imageLiteral(resourceName: "Tim-Cook"), #imageLiteral(resourceName: "Steve-Jobs")]
+    
+    let urls = ["https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", "https://www.sample-videos.com/audio/mp3/wave.mp3"]
 
     var now = Date()
 
-    let messageTypes = ["Text", "Text", "Text", "AttributedText", "Photo", "Video", "Location", "Emoji"]
+    let messageTypes = ["Text", "Text", "Text", "AttributedText", "Photo", "Video", "Location", "Emoji", "Audio"]
 
     let attributes = ["Font1", "Font2", "Font3", "Font4", "Color", "Combo"]
 
@@ -141,11 +143,12 @@ final internal class SampleData {
         }
     }
 
-    func randomMessage() -> MockMessage {
+    func randomMessage() -> MyMessage {
 
         let randomNumberSender = Int(arc4random_uniform(UInt32(senders.count)))
         let randomNumberText = Int(arc4random_uniform(UInt32(messageTextValues.count)))
         let randomNumberImage = Int(arc4random_uniform(UInt32(messageImages.count)))
+        let randomNumberAudio = Int(arc4random_uniform(UInt32(urls.count)))
         let randomMessageType = Int(arc4random_uniform(UInt32(messageTypes.count)))
         let randomNumberLocation = Int(arc4random_uniform(UInt32(locations.count)))
         let randomNumberEmoji = Int(arc4random_uniform(UInt32(emojis.count)))
@@ -155,27 +158,30 @@ final internal class SampleData {
 
         switch messageTypes[randomMessageType] {
         case "Text":
-            return MockMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date)
         case "AttributedText":
             let attributedText = attributedString(with: messageTextValues[randomNumberText])
-            return MockMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date)
+            return MyMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date)
         case "Photo":
             let image = messageImages[randomNumberImage]
-            return MockMessage(image: image, sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(image: image, sender: sender, messageId: uniqueID, date: date)
         case "Video":
             let image = messageImages[randomNumberImage]
-            return MockMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date)
+        case "Audio":
+            let url = urls[randomNumberAudio]
+            return MyMessage(url: URL(string: url)!, sender: sender, messageId: uniqueID, date: date)
         case "Location":
-            return MockMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date)
         case "Emoji":
-            return MockMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date)
         default:
             fatalError("Unrecognized mock message type")
         }
     }
 
-    func getMessages(count: Int, completion: ([MockMessage]) -> Void) {
-        var messages: [MockMessage] = []
+    func getMessages(count: Int, completion: ([MyMessage]) -> Void) {
+        var messages: [MyMessage] = []
         for _ in 0..<count {
             messages.append(randomMessage())
         }
@@ -187,7 +193,7 @@ final internal class SampleData {
         case dan:
             return Avatar(image: #imageLiteral(resourceName: "Dan-Leonard"), initials: "DL")
         case steven:
-            return Avatar(initials: "S")
+            return Avatar(image: #imageLiteral(resourceName: "Dan-Leonard"))
         case jobs:
             return Avatar(image: #imageLiteral(resourceName: "Steve-Jobs"), initials: "SJ")
         case cook:

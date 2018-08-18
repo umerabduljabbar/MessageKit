@@ -26,7 +26,7 @@ import Foundation
 import CoreLocation
 import MessageKit
 
-private struct MockLocationItem: LocationItem {
+private struct MyLocationItem: LocationItem {
 
     var location: CLLocation
     var size: CGSize
@@ -38,7 +38,7 @@ private struct MockLocationItem: LocationItem {
 
 }
 
-private struct MockMediaItem: MediaItem {
+private struct MyMediaItem: MediaItem {
 
     var url: URL?
     var image: UIImage?
@@ -50,10 +50,16 @@ private struct MockMediaItem: MediaItem {
         self.size = CGSize(width: 240, height: 240)
         self.placeholderImage = UIImage()
     }
+    
+    init(url: URL) {
+        self.url = url
+        self.size = CGSize(width: 240, height: 240)
+        self.placeholderImage = #imageLiteral(resourceName: "icons8-music")
+    }
 
 }
 
-internal struct MockMessage: MessageType {
+internal struct MyMessage: MessageType {
 
     var messageId: String
     var sender: Sender
@@ -76,17 +82,22 @@ internal struct MockMessage: MessageType {
     }
 
     init(image: UIImage, sender: Sender, messageId: String, date: Date) {
-        let mediaItem = MockMediaItem(image: image)
+        let mediaItem = MyMediaItem(image: image)
         self.init(kind: .photo(mediaItem), sender: sender, messageId: messageId, date: date)
     }
 
     init(thumbnail: UIImage, sender: Sender, messageId: String, date: Date) {
-        let mediaItem = MockMediaItem(image: thumbnail)
+        let mediaItem = MyMediaItem(image: thumbnail)
         self.init(kind: .video(mediaItem), sender: sender, messageId: messageId, date: date)
+    }
+    
+    init(url: URL, sender: Sender, messageId: String, date: Date) {
+        let mediaItem = MyMediaItem(url: url)
+        self.init(kind: .audio(mediaItem), sender: sender, messageId: messageId, date: date)
     }
 
     init(location: CLLocation, sender: Sender, messageId: String, date: Date) {
-        let locationItem = MockLocationItem(location: location)
+        let locationItem = MyLocationItem(location: location)
         self.init(kind: .location(locationItem), sender: sender, messageId: messageId, date: date)
     }
 

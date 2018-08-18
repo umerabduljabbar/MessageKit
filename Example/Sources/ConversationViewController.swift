@@ -25,12 +25,13 @@
 import UIKit
 import MessageKit
 import MapKit
+import AVKit
 
 internal class ConversationViewController: MessagesViewController {
 
     let refreshControl = UIRefreshControl()
     
-    var messageList: [MockMessage] = []
+    var messageList: [MyMessage] = []
     
     var isTyping = false
     
@@ -43,6 +44,8 @@ internal class ConversationViewController: MessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        self.slack()
+        
         let messagesToFetch = UserDefaults.standard.mockMessagesCount()
         
         DispatchQueue.global(qos: .userInitiated).async {
@@ -68,16 +71,7 @@ internal class ConversationViewController: MessagesViewController {
         messagesCollectionView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(ConversationViewController.loadMoreMessages), for: .valueChanged)
         
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(image: UIImage(named: "ic_keyboard"),
-                            style: .plain,
-                            target: self,
-                            action: #selector(ConversationViewController.handleKeyboardButton)),
-            UIBarButtonItem(image: UIImage(named: "ic_typing"),
-                            style: .plain,
-                            target: self,
-                            action: #selector(ConversationViewController.handleTyping))
-        ]
+        
     }
     
     @objc func handleTyping() {
@@ -94,13 +88,11 @@ internal class ConversationViewController: MessagesViewController {
         } else {
             
             let label = UILabel()
-            label.text = "nathan.tannar is typing..."
-            label.font = UIFont.boldSystemFont(ofSize: 16)
+            label.text = "nathan is typing..."
+            label.font = UIFont.systemFont(ofSize: 12)
             messageInputBar.topStackView.addArrangedSubview(label)
             messageInputBar.topStackViewPadding.top = 6
             messageInputBar.topStackViewPadding.left = 12
-            
-            // The backgroundView doesn't include the topStackView. This is so things in the topStackView can have transparent backgrounds if you need it that way or another color all together
             messageInputBar.backgroundColor = messageInputBar.backgroundView.backgroundColor
             
         }
@@ -119,33 +111,6 @@ internal class ConversationViewController: MessagesViewController {
         }
     }
     
-    @objc func handleKeyboardButton() {
-        
-        messageInputBar.inputTextView.resignFirstResponder()
-        let actionSheetController = UIAlertController(title: "Change Keyboard Style", message: nil, preferredStyle: .actionSheet)
-        let actions = [
-            UIAlertAction(title: "Slack", style: .default, handler: { _ in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
-                    self.slack()
-                })
-            }),
-            UIAlertAction(title: "iMessage", style: .default, handler: { _ in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
-                    self.iMessage()
-                })
-            }),
-            UIAlertAction(title: "Default", style: .default, handler: { _ in
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 1, execute: {
-                    self.defaultStyle()
-                })
-            }),
-            UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        ]
-        actions.forEach { actionSheetController.addAction($0) }
-        actionSheetController.view.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-        present(actionSheetController, animated: true, completion: nil)
-    }
-    
     // MARK: - Keyboard Style
 
     func slack() {
@@ -155,20 +120,32 @@ internal class ConversationViewController: MessagesViewController {
         messageInputBar.inputTextView.backgroundColor = .clear
         messageInputBar.inputTextView.layer.borderWidth = 0
         let items = [
-            makeButton(named: "ic_camera").onTextViewDidChange { button, textView in
+            makeButton(named: "icons8-camera").onTextViewDidChange { button, textView in
                 button.isEnabled = textView.text.isEmpty
-            },
-            makeButton(named: "ic_at").onSelected {
-                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-            },
-            makeButton(named: "ic_hashtag").onSelected {
-                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-            },
+                }.configure({ (button) in
+                    button.setTitle("image", for: .normal)
+                }),
+            makeButton(named: "icons8-record").onTextViewDidChange { button, textView in
+                button.isEnabled = textView.text.isEmpty
+                }.configure({ (button) in
+                    button.setTitle("audio", for: .normal)
+                }),
+            makeButton(named: "icons8-near").onTextViewDidChange { button, textView in
+                button.isEnabled = textView.text.isEmpty
+                }.configure({ (button) in
+                    button.setTitle("location", for: .normal)
+                }),
+//            makeButton(named: "icons8-record").onSelected {
+//                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+//            },
+//            makeButton(named: "icons8-record").onSelected {
+//                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+//            },
             .flexibleSpace,
-            makeButton(named: "ic_library").onTextViewDidChange { button, textView in
-                button.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-                button.isEnabled = textView.text.isEmpty
-            },
+//            makeButton(named: "ic_library").onTextViewDidChange { button, textView in
+//                button.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
+//                button.isEnabled = textView.text.isEmpty
+//            },
             messageInputBar.sendButton
                 .configure {
                     $0.layer.cornerRadius = 8
@@ -176,6 +153,7 @@ internal class ConversationViewController: MessagesViewController {
                     $0.layer.borderColor = $0.titleColor(for: .disabled)?.cgColor
                     $0.setTitleColor(.white, for: .normal)
                     $0.setTitleColor(.white, for: .highlighted)
+                    $0.setTitle("Send", for: .normal)
                     $0.setSize(CGSize(width: 52, height: 30), animated: true)
                 }.onDisabled {
                     $0.layer.borderColor = $0.titleColor(for: .disabled)?.cgColor
@@ -185,7 +163,7 @@ internal class ConversationViewController: MessagesViewController {
                     $0.layer.borderColor = UIColor.clear.cgColor
                 }.onSelected {
                     // We use a transform becuase changing the size would cause the other views to relayout
-                    $0.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                    $0.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
                 }.onDeselected {
                     $0.transform = CGAffineTransform.identity
             }
@@ -201,32 +179,6 @@ internal class ConversationViewController: MessagesViewController {
         
         // Finally set the items
         messageInputBar.setStackViewItems(items, forStack: .bottom, animated: true)
-    }
-    
-    func iMessage() {
-        defaultStyle()
-        messageInputBar.isTranslucent = false
-        messageInputBar.backgroundView.backgroundColor = .white
-        messageInputBar.separatorLine.isHidden = true
-        messageInputBar.inputTextView.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
-        messageInputBar.inputTextView.placeholderTextColor = UIColor(red: 0.6, green: 0.6, blue: 0.6, alpha: 1)
-        messageInputBar.inputTextView.textContainerInset = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 36)
-        messageInputBar.inputTextView.placeholderLabelInsets = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 36)
-        messageInputBar.inputTextView.layer.borderColor = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 1).cgColor
-        messageInputBar.inputTextView.layer.borderWidth = 1.0
-        messageInputBar.inputTextView.layer.cornerRadius = 16.0
-        messageInputBar.inputTextView.layer.masksToBounds = true
-        messageInputBar.inputTextView.scrollIndicatorInsets = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-        messageInputBar.setRightStackViewWidthConstant(to: 36, animated: true)
-        messageInputBar.setStackViewItems([messageInputBar.sendButton], forStack: .right, animated: true)
-        messageInputBar.sendButton.imageView?.backgroundColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-        messageInputBar.sendButton.contentEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
-        messageInputBar.sendButton.setSize(CGSize(width: 36, height: 36), animated: true)
-        messageInputBar.sendButton.image = #imageLiteral(resourceName: "ic_up")
-        messageInputBar.sendButton.title = nil
-        messageInputBar.sendButton.imageView?.layer.cornerRadius = 16
-        messageInputBar.sendButton.backgroundColor = .clear
-        messageInputBar.textViewPadding.right = -38
     }
     
     func defaultStyle() {
@@ -249,8 +201,8 @@ internal class ConversationViewController: MessagesViewController {
                 $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
             }.onDeselected {
                 $0.tintColor = UIColor.lightGray
-            }.onTouchUpInside { _ in
-                print("Item Tapped")
+            }.onTouchUpInside { item in
+                print("Item Tapped \(item.title ?? "no name")")
         }
     }
 }
@@ -272,7 +224,7 @@ extension ConversationViewController: MessagesDataSource {
     }
 
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        if indexPath.section % 3 == 0 {
+        if indexPath.section % 10 == 0 {
             return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedStringKey.foregroundColor: UIColor.darkGray])
         }
         return nil
@@ -317,7 +269,7 @@ extension ConversationViewController: MessagesDisplayDelegate {
 
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         let corner: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
-        return .bubbleTail(corner, .curved)
+        return .bubbleTail(corner, .pointedEdge)
 //        let configurationClosure = { (view: MessageContainerView) in}
 //        return .custom(configurationClosure)
     }
@@ -325,6 +277,7 @@ extension ConversationViewController: MessagesDisplayDelegate {
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         let avatar = SampleData.shared.getAvatarFor(sender: message.sender)
         avatarView.set(avatar: avatar)
+        
     }
 
     // MARK: - Location Messages
@@ -384,6 +337,20 @@ extension ConversationViewController: MessageCellDelegate {
     }
 
     func didTapMessage(in cell: MessageCollectionViewCell) {
+        if let cell = cell as? MediaMessageCell {
+            print("Media Message Tapped \(String(describing:  cell.url))")
+            if let url = cell.url{
+                let vc = AVPlayerViewController()
+                vc.player = AVPlayer(url: url)
+                self.present(vc, animated: true, completion: {
+                    vc.player?.play()
+                })
+            }
+        }else if let cell = cell as? LocationMessageCell {
+            print("Media Message Tapped \( cell)")
+        }
+        
+        
         print("Message tapped")
     }
 
@@ -439,7 +406,7 @@ extension ConversationViewController: MessageInputBarDelegate {
             
             if let image = component as? UIImage {
                 
-                let imageMessage = MockMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let imageMessage = MyMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date())
                 messageList.append(imageMessage)
                 messagesCollectionView.insertSections([messageList.count - 1])
                 
@@ -447,7 +414,7 @@ extension ConversationViewController: MessageInputBarDelegate {
                 
                 let attributedText = NSAttributedString(string: text, attributes: [.font: UIFont.systemFont(ofSize: 15), .foregroundColor: UIColor.blue])
                 
-                let message = MockMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let message = MyMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date())
                 messageList.append(message)
                 messagesCollectionView.insertSections([messageList.count - 1])
             }
