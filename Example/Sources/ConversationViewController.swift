@@ -135,17 +135,7 @@ internal class ConversationViewController: MessagesViewController {
                 }.configure({ (button) in
                     button.setTitle("location", for: .normal)
                 }),
-//            makeButton(named: "icons8-record").onSelected {
-//                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-//            },
-//            makeButton(named: "icons8-record").onSelected {
-//                $0.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-//            },
-            .flexibleSpace,
-//            makeButton(named: "ic_library").onTextViewDidChange { button, textView in
-//                button.tintColor = UIColor(red: 69/255, green: 193/255, blue: 89/255, alpha: 1)
-//                button.isEnabled = textView.text.isEmpty
-//            },
+
             messageInputBar.sendButton
                 .configure {
                     $0.layer.cornerRadius = 8
