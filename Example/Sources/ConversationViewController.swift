@@ -214,20 +214,29 @@ extension ConversationViewController: MessagesDataSource {
     }
 
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        if indexPath.section % 10 == 0 {
+//        if indexPath.section % 10 == 0 {
             return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedStringKey.foregroundColor: UIColor.darkGray])
-        }
-        return nil
+//        }
+//        return nil
     }
     
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         let name = message.sender.displayName
         return NSAttributedString(string: name, attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption1)])
     }
-
+    
     func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-
-        let dateString = formatter.string(from: message.sentDate)
+        
+        var dateString = formatter.string(from: message.sentDate)
+        if !self.isFromCurrentSender(message: message){
+            let status = message.status
+            if status.isRead{
+                dateString = "Read"
+            }else if status.isDelivered{
+                dateString = "Sent"
+            }
+        }
+        
         return NSAttributedString(string: dateString, attributes: [NSAttributedStringKey.font: UIFont.preferredFont(forTextStyle: .caption2)])
     }
 
@@ -396,7 +405,7 @@ extension ConversationViewController: MessageInputBarDelegate {
             
             if let image = component as? UIImage {
                 
-                let imageMessage = MyMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let imageMessage = MyMessage(image: image, sender: currentSender(), messageId: UUID().uuidString, date: Date(), status: Status(isRead: true, isDelivered: true))
                 messageList.append(imageMessage)
                 messagesCollectionView.insertSections([messageList.count - 1])
                 
@@ -404,7 +413,7 @@ extension ConversationViewController: MessageInputBarDelegate {
                 
                 let attributedText = NSAttributedString(string: text, attributes: [.font: UIFont.systemFont(ofSize: 15), .foregroundColor: UIColor.blue])
                 
-                let message = MyMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date())
+                let message = MyMessage(attributedText: attributedText, sender: currentSender(), messageId: UUID().uuidString, date: Date(), status: Status(isRead: true, isDelivered: true))
                 messageList.append(message)
                 messagesCollectionView.insertSections([messageList.count - 1])
             }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D6B34BA21529A1800AC5882 /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6B34B921529A1800AC5882 /* Status.swift */; };
 		0EE91E661FDEC888005420A2 /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE91E651FDEC887005420A2 /* CGRect+Extensions.swift */; };
 		0EF0888C206F7E83007F2F58 /* CellSizeCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EF0888B206F7E83007F2F58 /* CellSizeCalculator.swift */; };
 		1F066E131FD90BB600E11013 /* MessagesViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F7FC8CB1FD2700B006CC979 /* MessagesViewControllerSpec.swift */; };
@@ -112,6 +113,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0D6B34B921529A1800AC5882 /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
 		0EE91E651FDEC887005420A2 /* CGRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		0EF0888B206F7E83007F2F58 /* CellSizeCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellSizeCalculator.swift; sourceTree = "<group>"; };
 		1F066E101FD90A0600E11013 /* MessageLabelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageLabelSpec.swift; sourceTree = "<group>"; };
@@ -228,11 +230,11 @@
 		2EB618F01F84676A007FBA0E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				B7A03F361F866946006AEF79 /* TextMessageCell.swift */,
 				B7A03F381F866946006AEF79 /* LocationMessageCell.swift */,
 				B7A03F391F866946006AEF79 /* MediaMessageCell.swift */,
 				B7A03F7A1F866B85006AEF79 /* MessageCollectionViewCell.swift */,
 				1F6C040B206A2891007BDE44 /* MessageContentCell.swift */,
-				B7A03F361F866946006AEF79 /* TextMessageCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -389,6 +391,7 @@
 				B7A03F1F1F866895006AEF79 /* MessageStyle.swift */,
 				B7A03F1A1F866895006AEF79 /* NSConstraintLayoutSet.swift */,
 				B7A03F1E1F866895006AEF79 /* Sender.swift */,
+				0D6B34B921529A1800AC5882 /* Status.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -617,6 +620,7 @@
 				B7A03F6B1F8669EB006AEF79 /* UIColor+Extensions.swift in Sources */,
 				B7A03F5E1F8669CA006AEF79 /* MessagesLayoutDelegate.swift in Sources */,
 				B7A03F261F866895006AEF79 /* MessageKitDateFormatter.swift in Sources */,
+				0D6B34BA21529A1800AC5882 /* Status.swift in Sources */,
 				B7A03F6D1F8669EB006AEF79 /* Bundle+Extensions.swift in Sources */,
 				1FD589602064E08A004B5081 /* MediaItem.swift in Sources */,
 				B7A03F611F8669CA006AEF79 /* MessagesDataSource.swift in Sources */,

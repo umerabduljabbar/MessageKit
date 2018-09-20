@@ -67,13 +67,15 @@ open class MediaMessageCell: MessageContentCell {
 
         switch message.kind {
         case .photo(let mediaItem):
-            imageView.image = mediaItem.image ?? mediaItem.placeholderImage
+            self.url = mediaItem.url
+            imageView.image = mediaItem.placeholderImage
             playButtonView.isHidden = true
         case .video(let mediaItem):
-            imageView.image = mediaItem.image ?? mediaItem.placeholderImage
+            imageView.image = mediaItem.placeholderImage
+            self.url = mediaItem.url
             playButtonView.isHidden = false
         case .audio(let mediaItem):
-            imageView.image = mediaItem.image ?? mediaItem.placeholderImage
+            imageView.image = mediaItem.placeholderImage
             self.url = mediaItem.url
             playButtonView.isHidden = false
         default:

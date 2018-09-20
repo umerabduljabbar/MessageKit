@@ -50,6 +50,11 @@ struct MockMediaItem: MediaItem {
         self.size = CGSize(width: 240, height: 240)
         self.placeholderImage = UIImage()
     }
+    
+    init(url : URL) {
+        self.url = url
+        self.size = CGSize(width: 240, height: 240)
+    }
 
 }
 
@@ -59,38 +64,40 @@ struct MockMessage: MessageType {
     var sender: Sender
     var sentDate: Date
     var kind: MessageKind
+    var status: Status
 
-    private init(kind: MessageKind, sender: Sender, messageId: String) {
+    private init(kind: MessageKind, sender: Sender, messageId: String, status : Status) {
         self.kind = kind
         self.sender = sender
         self.messageId = messageId
         self.sentDate = Date()
+        self.status = status
     }
 
-    init(text: String, sender: Sender, messageId: String) {
-        self.init(kind: .text(text), sender: sender, messageId: messageId)
+    init(text: String, sender: Sender, messageId: String, status : Status) {
+        self.init(kind: .text(text), sender: sender, messageId: messageId, status: status)
     }
 
-    init(attributedText: NSAttributedString, sender: Sender, messageId: String) {
-        self.init(kind: .attributedText(attributedText), sender: sender, messageId: messageId)
+    init(attributedText: NSAttributedString, sender: Sender, messageId: String, status : Status) {
+        self.init(kind: .attributedText(attributedText), sender: sender, messageId: messageId )
     }
 
-    init(image: UIImage, sender: Sender, messageId: String) {
-        let mediaItem = MockMediaItem(image: image)
+    init(imageUrl: URL, sender: Sender, messageId: String, status : Status) {
+        let mediaItem = MockMediaItem(url: imageUrl)
         self.init(kind: .photo(mediaItem), sender: sender, messageId: messageId)
     }
 
-    init(thumbnail: UIImage, sender: Sender, messageId: String) {
+    init(thumbnail: UIImage, sender: Sender, messageId: String, status : Status) {
         let mediaItem = MockMediaItem(image: thumbnail)
         self.init(kind: .video(mediaItem), sender: sender, messageId: messageId)
     }
 
-    init(location: CLLocation, sender: Sender, messageId: String) {
+    init(location: CLLocation, sender: Sender, messageId: String, status : Status) {
         let locationItem = MockLocationItem(location: location)
         self.init(kind: .location(locationItem), sender: sender, messageId: messageId)
     }
 
-    init(emoji: String, sender: Sender, messageId: String) {
+    init(emoji: String, sender: Sender, messageId: String, status : Status) {
         self.init(kind: .emoji(emoji), sender: sender, messageId: messageId)
     }
 

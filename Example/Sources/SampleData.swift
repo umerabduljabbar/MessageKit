@@ -155,26 +155,28 @@ final internal class SampleData {
         let uniqueID = NSUUID().uuidString
         let sender = senders[randomNumberSender]
         let date = dateAddingRandomTime()
+        
+        
 
         switch messageTypes[randomMessageType] {
         case "Text":
-            return MyMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(text: messageTextValues[randomNumberText], sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "AttributedText":
             let attributedText = attributedString(with: messageTextValues[randomNumberText])
-            return MyMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date)
+            return MyMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Photo":
             let image = messageImages[randomNumberImage]
-            return MyMessage(image: image, sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(image: image, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Video":
             let image = messageImages[randomNumberImage]
-            return MyMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Audio":
             let url = urls[randomNumberAudio]
-            return MyMessage(url: URL(string: url)!, sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(url: URL(string: url)!, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Location":
-            return MyMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(location: locations[randomNumberLocation], sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Emoji":
-            return MyMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date)
+            return MyMessage(emoji: emojis[randomNumberEmoji], sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         default:
             fatalError("Unrecognized mock message type")
         }
