@@ -288,14 +288,14 @@ extension ConversationViewController: MessagesDisplayDelegate {
     
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         
-        switch message.kind {
-        
-        case .photo(let item):
+//        switch message.kind {
+//
+//        case .photo(let item):
 //            item.url
-            break
-        default:
-            break
-        }
+//            break
+//        default:
+//            break
+//        }
         
     }
     

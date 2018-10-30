@@ -31,6 +31,8 @@ open class LocationMessageCell: MessageContentCell {
     /// The activity indicator to be displayed while the map image is loading.
     open var activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
 
+    var location : CLLocation?
+    
     /// The image view holding the map image.
     open var imageView = UIImageView()
     
@@ -65,7 +67,9 @@ open class LocationMessageCell: MessageContentCell {
         let animationBlock = displayDelegate.animationBlockForLocation(message: message, at: indexPath, in: messagesCollectionView)
 
         guard case let .location(locationItem) = message.kind else { fatalError("") }
-
+        
+        self.location = locationItem.location
+        
         activityIndicator.startAnimating()
 
         let snapshotOptions = MKMapSnapshotOptions()
