@@ -40,6 +40,7 @@ open class MediaMessageCell: MessageContentCell {
         return imageView
     }()
     
+    open var kind : MessageKind?
     open var url : URL?
 
     // MARK: - Methods
@@ -67,14 +68,17 @@ open class MediaMessageCell: MessageContentCell {
 
         switch message.kind {
         case .photo(let mediaItem):
+            self.kind = message.kind
             self.url = mediaItem.url
             imageView.image = mediaItem.placeholderImage
             playButtonView.isHidden = true
         case .video(let mediaItem):
+            self.kind = message.kind
             imageView.image = mediaItem.placeholderImage
             self.url = mediaItem.url
             playButtonView.isHidden = false
         case .audio(let mediaItem):
+            self.kind = message.kind
             imageView.image = mediaItem.placeholderImage
             self.url = mediaItem.url
             playButtonView.isHidden = false

@@ -70,6 +70,9 @@ final internal class SampleData {
     
     let urls = ["https://www.sample-videos.com/audio/mp3/crowd-cheering.mp3", "https://www.sample-videos.com/audio/mp3/wave.mp3"]
 
+    let imageUrls = ["https://images.pexels.com/photos/799463/pexels-photo-799463.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+                     "https://images.pexels.com/photos/972990/pexels-photo-972990.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"]
+    
     var now = Date()
 
     let messageTypes = ["Text", "Text", "Text", "AttributedText", "Photo", "Video", "Location", "Emoji", "Audio"]
@@ -147,7 +150,7 @@ final internal class SampleData {
 
         let randomNumberSender = Int(arc4random_uniform(UInt32(senders.count)))
         let randomNumberText = Int(arc4random_uniform(UInt32(messageTextValues.count)))
-        let randomNumberImage = Int(arc4random_uniform(UInt32(messageImages.count)))
+        let randomNumberImage = Int(arc4random_uniform(UInt32(imageUrls.count)))
         let randomNumberAudio = Int(arc4random_uniform(UInt32(urls.count)))
         let randomMessageType = Int(arc4random_uniform(UInt32(messageTypes.count)))
         let randomNumberLocation = Int(arc4random_uniform(UInt32(locations.count)))
@@ -165,8 +168,8 @@ final internal class SampleData {
             let attributedText = attributedString(with: messageTextValues[randomNumberText])
             return MyMessage(attributedText: attributedText, sender: senders[randomNumberSender], messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Photo":
-            let image = messageImages[randomNumberImage]
-            return MyMessage(image: image, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
+            let image = imageUrls[randomNumberImage]
+            return MyMessage(imageUrl: image, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))
         case "Video":
             let image = messageImages[randomNumberImage]
             return MyMessage(thumbnail: image, sender: sender, messageId: uniqueID, date: date, status: Status(isRead: true, isDelivered: true))

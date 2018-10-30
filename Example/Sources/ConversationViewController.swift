@@ -228,10 +228,15 @@ extension ConversationViewController: MessagesDataSource {
     func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         
         var dateString = formatter.string(from: message.sentDate)
-        if !self.isFromCurrentSender(message: message){
+        if self.isFromCurrentSender(message: message){
             let status = message.status
             if status.isRead{
-                dateString = "Read"
+                let attributedString = NSMutableAttributedString(string: "Read ")
+                let loveAttachment = NSTextAttachment()
+                loveAttachment.image = #imageLiteral(resourceName: "read")
+                loveAttachment.bounds = CGRect(x: 0, y: -5, width: 15, height: 15)
+                attributedString.append(NSAttributedString(attachment: loveAttachment))
+                return NSAttributedString(attachment: loveAttachment)
             }else if status.isDelivered{
                 dateString = "Sent"
             }
@@ -278,6 +283,22 @@ extension ConversationViewController: MessagesDisplayDelegate {
         avatarView.set(avatar: avatar)
         
     }
+    
+    // MARK: - Media Messages
+    
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        
+        switch message.kind {
+        
+        case .photo(let item):
+//            item.url
+            break
+        default:
+            break
+        }
+        
+    }
+    
 
     // MARK: - Location Messages
 
@@ -311,18 +332,18 @@ extension ConversationViewController: MessagesDisplayDelegate {
 extension ConversationViewController: MessagesLayoutDelegate {
 
     func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        if indexPath.section % 3 == 0 {
+//        if indexPath.section % 3 == 0 {
             return 10
-        }
-        return 0
+//        }
+//        return 0
     }
     
     func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        return 16
+        return 15
     }
 
     func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        return 16
+        return 15
     }
 
 }
@@ -337,14 +358,28 @@ extension ConversationViewController: MessageCellDelegate {
 
     func didTapMessage(in cell: MessageCollectionViewCell) {
         if let cell = cell as? MediaMessageCell {
-            print("Media Message Tapped \(String(describing:  cell.url))")
-            if let url = cell.url{
-                let vc = AVPlayerViewController()
-                vc.player = AVPlayer(url: url)
-                self.present(vc, animated: true, completion: {
-                    vc.player?.play()
-                })
+            
+            if let kind = cell.kind {
+                switch kind {
+                case .photo(_):
+                    
+                    break
+                case .audio(_):
+                    if let url = cell.url{
+                        let vc = AVPlayerViewController()
+                        vc.player = AVPlayer(url: url)
+                        self.present(vc, animated: true, completion: {
+                            vc.player?.play()
+                        })
+                    }
+                    break
+                    
+                default:
+                    break
+                }
             }
+            
+            print("Media Message Tapped \(String(describing:  cell.url))")
         }else if let cell = cell as? LocationMessageCell {
             print("Media Message Tapped \( cell)")
         }

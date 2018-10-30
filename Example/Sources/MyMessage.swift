@@ -93,6 +93,17 @@ internal struct MyMessage: MessageType {
         self.init(kind: .video(mediaItem), sender: sender, messageId: messageId, date: date, status: status)
     }
     
+    init(imageUrl: URL, sender: Sender, messageId: String, date: Date, status: Status) {
+        let mediaItem = MyMediaItem(url: imageUrl)
+        self.init(kind: .photo(mediaItem), sender: sender, messageId: messageId, date: date, status: status)
+    }
+    
+    init(imageUrl: String, sender: Sender, messageId: String, date: Date, status: Status) {
+        let url = URL(string: imageUrl)
+        let mediaItem = MyMediaItem(url: url!)
+        self.init(kind: .photo(mediaItem), sender: sender, messageId: messageId, date: date, status: status)
+    }
+    
     init(url: URL, sender: Sender, messageId: String, date: Date, status: Status) {
         let mediaItem = MyMediaItem(url: url)
         self.init(kind: .audio(mediaItem), sender: sender, messageId: messageId, date: date, status: status)
